@@ -128,13 +128,17 @@ def main():
     st.set_page_config(page_title="Personal Finance Tracker", layout="wide")
     
     # --- THE ULTIMATE INVISIBILITY CLOAK ---
-    # We can now safely hide the entire header because nothing is in the sidebar!
     hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
             header {visibility: hidden;}
             [data-testid="stToolbar"] {visibility: hidden !important;}
+            
+            /* Hide the floating "Hosted with Streamlit" badge */
+            div[class^="viewerBadge"] {display: none !important;}
+            .viewerBadge_container__1QSob {display: none !important;}
+            a[href^="https://streamlit.io/cloud"] {display: none !important;}
             </style>
             """
     st.markdown(hide_st_style, unsafe_allow_html=True)
