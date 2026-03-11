@@ -130,6 +130,11 @@ def main():
     hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            /* Hide the top right Streamlit menu */
+            [data-testid="stToolbar"] {display: none !important;}
+            /* Hide the Streamlit Community Cloud Share/GitHub badge */
+            div[class^="viewerBadge"] {display: none !important;}
             </style>
             """
     st.markdown(hide_st_style, unsafe_allow_html=True)
