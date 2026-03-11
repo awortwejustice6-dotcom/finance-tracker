@@ -126,42 +126,53 @@ class FinancialSummary:
 # ==========================================
 def main():
     st.set_page_config(page_title="Personal Finance Tracker", layout="wide")
-# --- HIDE STREAMLIT BRANDING & MENU ---
+    
+    # --- THE ULTIMATE INVISIBILITY CLOAK ---
+    # We can now safely hide the entire header because nothing is in the sidebar!
     hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
+            header {visibility: hidden;}
+            [data-testid="stToolbar"] {visibility: hidden !important;}
             </style>
             """
     st.markdown(hide_st_style, unsafe_allow_html=True)
-    # --------------------------------------
 
     st.title("💸 Monthly Finance & Budget Tracker")
 
     db = DatabaseManager()
     summary = FinancialSummary(db)
 
-    # --- SIDEBAR: Budget Setup ---
-    st.sidebar.header("1. Budget Setup")
-    monthly_income = st.sidebar.number_input("Monthly Income (GHS)", min_value=0.0, value=1000.0, step=100.0)
+   # --- MOVED TO MAIN PAGE: Budget Setup ---
+    # ==========================================
+    st.header("1. Budget Setup")
     
-    budget_mode = st.sidebar.radio("Allocation Strategy", ["Standard (50/30/20)", "Custom"])
+    # Put income and strategy side-by-side so it doesn't take up too much vertical space
+    setup_col1, setup_col2 = st.columns(2)
+    with setup_col1:
+        monthly_income = st.number_input("Monthly Income (GHS)", min_value=0.0, value=1000.0, step=100.0)
+    with setup_col2:
+        budget_mode = st.radio("Allocation Strategy", ["Standard (50/30/20)", "Custom"])
     
     custom_splits = {"Needs": 50, "Wants": 30, "Savings": 20}
     if budget_mode == "Custom":
-        st.sidebar.write("Set your percentages (must equal 100%):")
-        custom_splits["Needs"] = st.sidebar.slider("Needs %", 0, 100, 50)
-        custom_splits["Wants"] = st.sidebar.slider("Wants %", 0, 100, 30)
-        custom_splits["Savings"] = st.sidebar.slider("Savings %", 0, 100, 20)
+        st.write("Set your percentages (must equal 100%):")
+        # Put the sliders side-by-side for a clean look
+        c1, c2, c3 = st.columns(3)
+        custom_splits["Needs"] = c1.slider("Needs %", 0, 100, 50)
+        custom_splits["Wants"] = c2.slider("Wants %", 0, 100, 30)
+        custom_splits["Savings"] = c3.slider("Savings %", 0, 100, 20)
         
         if sum(custom_splits.values()) != 100:
-            st.sidebar.error("Percentages must add up to exactly 100!")
+            st.error("Percentages must add up to exactly 100!")
 
     allocator = BudgetAllocator(mode="Custom" if budget_mode == "Custom" else "Standard", custom_splits=custom_splits)
     allocations = allocator.calculate_split(monthly_income)
 
-    # --- MAIN DASHBOARD: Expense Summary ---
-    st.header("Dashboard")
+    st.divider()
+   # --- MAIN DASHBOARD: Expense Summary ---
+    st.header("2. Expense Dashboard")
     daily_tot, weekly_tot, monthly_tot = summary.get_totals()
     
     col1, col2, col3 = st.columns(3)
