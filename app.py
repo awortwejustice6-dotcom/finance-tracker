@@ -126,6 +126,17 @@ class FinancialSummary:
 # ==========================================
 def main():
     st.set_page_config(page_title="Personal Finance Tracker", layout="wide")
+# --- HIDE STREAMLIT BRANDING & MENU ---
+    hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+    st.markdown(hide_st_style, unsafe_allow_html=True)
+    # --------------------------------------
+
     st.title("💸 Monthly Finance & Budget Tracker")
 
     db = DatabaseManager()
